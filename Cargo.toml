@@ -4,6 +4,10 @@ version = "0.1.0"
 authors = ["PierreLeidbring <pierre.leidbring@gmail.com>"]
 edition = "2018"
 
+[[test]]
+name = "should_panic"
+harness = false
+
 [dependencies]
 bootloader = "0.8.0"
 volatile = "0.2.6"
@@ -19,4 +23,5 @@ features = ["spin_no_std"]
 default-target = "x86_64-os.json"
 #run-command = ["qemu-system-x86_64", "-display", "sdl", "-drive", "format=raw,file=target/x86_64-os/debug/bootimage-os.bin"]
 run-command = ["qemu-system-x86_64", "-display", "sdl", "-drive", "format=raw,file={}"]
-test-args = ["-display", "sdl", "-device", "isa-debug-exit,iobase=0xf4,iosize=0x04"]
+test-args = ["-display", "none", "-device", "isa-debug-exit,iobase=0xf4,iosize=0x04", "-serial", "stdio"]
+test-success-exit-code = 33		# (0x0 << 1) | 1
