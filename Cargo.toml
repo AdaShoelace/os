@@ -1,0 +1,12 @@
+[package]
+name = "os"
+version = "0.1.0"
+authors = ["PierreLeidbring <pierre.leidbring@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+bootloader = {version = "0.8.0"}
+
+[package.metadata.bootimage]
+default-target = "x86_64-os.json"
+run-command = ["qemu-system-x86_64", "-display", "sdl", "-drive", "format=raw,file=target/x86_64-os/debug/bootimage-os.bin"] 
