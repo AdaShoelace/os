@@ -1,1 +1,3 @@
 QEMU flag -kernel enables booting a kernel without the need for creating an image and installing that image to the bootloader -> faster start time. Dependant on multiboot header (multiboot = boot protocol)
+
+implement recursive paging

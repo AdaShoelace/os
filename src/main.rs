@@ -5,17 +5,22 @@
 #![reexport_test_harness_main = "test_main"]
 
 use core::panic::PanicInfo;
-use os::{println, init, hlt_loop};
+use bootloader::{BootInfo, entry_point};
+use os::{
+    println,
+    init,
+    hlt_loop,
+    memory,
+};
 
-#[no_mangle]
-pub extern "C" fn _start() -> ! {
+entry_point!(kernel_main);
+
+pub  fn kernel_main(boot_info: &'static BootInfo) -> ! {
+    use x86_64::registers::control::Cr3;
+    use x86_64::{structures::paging::{Page, FrameAllocator}, VirtAddr};
     println!("Hello World!");
 
     init();
-    use x86_64::registers::control::Cr3;
-
-    let (level_4_page_table, _) = Cr3::read();
-    println!("Level 4 page table at: {:?}", level_4_page_table.start_address());
 
     #[cfg(test)]
     test_main();
