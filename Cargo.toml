@@ -26,6 +26,20 @@ linked_list_allocator = "0.8.1"
 version = "1.0"
 features = ["spin_no_std"]
 
+[dependencies.crossbeam-queue]
+version = "0.2.1"
+default-features = false
+features = ["alloc"]
+
+[dependencies.conquer-once]
+version = "0.2.0"
+default-features = false
+
+[dependencies.futures-util]
+version = "0.3.4"
+default-features = false
+features = ["alloc"]
+
 [package.metadata.bootimage]
 default-target = "x86_64-os.json"
 #run-command = ["qemu-system-x86_64", "-display", "sdl", "-drive", "format=raw,file=target/x86_64-os/debug/bootimage-os.bin"]
