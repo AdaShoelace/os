@@ -2,6 +2,7 @@ use core::fmt;
 use lazy_static::lazy_static;
 use spin::Mutex;
 use volatile::Volatile;
+use crate::serial_println;
 
 #[cfg(test)]
 use crate::{serial_print, serial_println};
@@ -88,6 +89,10 @@ impl Writer {
     pub fn write_byte(&mut self, byte: u8) {
         match byte {
             b'\n' => self.new_line(),
+            byte if byte == 0x8 => {
+                serial_println!("backspace");
+                self.backspace();
+            },
             byte => {
                 if self.column_position >= BUFFER_WIDTH {
                     self.new_line();
@@ -115,7 +120,7 @@ impl Writer {
         for byte in s.bytes() {
             match byte {
                 // printable ASCII byte or newline
-                0x20..=0x7e | b'\n' => self.write_byte(byte),
+                0x20..=0x7e | b'\n' | 0x8 => self.write_byte(byte),
                 // not part of printable ASCII range
                 _ => self.write_byte(0xfe),
             }
@@ -143,6 +148,15 @@ impl Writer {
         for col in 0..BUFFER_WIDTH {
             self.buffer.chars[row][col].write(blank);
         }
+    }
+
+    pub fn backspace(&mut self) {
+        if self.column_position == 0 {
+            return;
+        }
+        self.column_position -= 1;
+        self.write_byte(b' ');
+        self.column_position -= 1;
     }
 }
 
