@@ -19,6 +19,7 @@ pub mod gdt;
 pub mod memory;
 pub mod allocator;
 pub mod task;
+pub mod scheduler;
 pub mod shell;
 
 #[cfg(test)]
