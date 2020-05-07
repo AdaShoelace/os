@@ -12,15 +12,19 @@
 
 extern crate alloc;
 
+pub mod arch;
 pub mod serial;
 pub mod vga_buffer;
-pub mod interrupts;
-pub mod gdt;
 pub mod memory;
 pub mod allocator;
 pub mod task;
 pub mod scheduler;
 pub mod shell;
+
+use crate::arch::{
+    gdt,
+    interrupts
+};
 
 #[cfg(test)]
 use bootloader::{BootInfo, entry_point};
