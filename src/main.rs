@@ -3,6 +3,7 @@
 #![feature(custom_test_frameworks)]
 #![test_runner(os::test_runner)]
 #![reexport_test_harness_main = "test_main"]
+#![feature(asm)]
 
 extern crate alloc;
 
@@ -26,6 +27,14 @@ async fn async_number() -> u32 {
 async fn example_task() {
     let number = async_number().await;
     println!("async number: {}", number);
+}
+
+#[cfg(any(target_arch = "x86_64"))]
+fn temp() {
+    unsafe { 
+        asm!("mov $$42, %rbx");
+        asm!("int  $$0x80"); 
+    }
 }
 
 pub  fn kernel_main(boot_info: &'static BootInfo) -> ! {
@@ -56,6 +65,7 @@ pub  fn kernel_main(boot_info: &'static BootInfo) -> ! {
     allocator::init_heap(&mut mapper, &mut frame_allocator)
         .expect("heap initialization failed");
 
+    temp();
     #[cfg(test)]
     test_main();
 

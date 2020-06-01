@@ -9,10 +9,10 @@
 #![feature(const_fn)]
 #![feature(const_in_array_repeat_expressions)]
 #![feature(wake_trait)]
+#![feature(asm)]
 
 extern crate alloc;
 
-pub mod arch;
 pub mod serial;
 pub mod vga_buffer;
 pub mod memory;
@@ -20,11 +20,8 @@ pub mod allocator;
 pub mod task;
 pub mod scheduler;
 pub mod shell;
-
-use crate::arch::{
-    gdt,
-    interrupts
-};
+pub mod gdt;
+pub mod interrupts;
 
 #[cfg(test)]
 use bootloader::{BootInfo, entry_point};

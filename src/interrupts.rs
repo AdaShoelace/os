@@ -28,6 +28,8 @@ lazy_static! {
         idt[InterruptIndex::Keyboard.as_usize()]
             .set_handler_fn(keyboard_interrupt_handler);
         idt.page_fault.set_handler_fn(page_fault_handler);
+        idt[InterruptIndex::Syscall.as_usize()]
+            .set_handler_fn(syscall_handler);
         idt
     };
 }
@@ -40,7 +42,8 @@ pub fn init_idt() {
 #[repr(u8)]
 pub enum InterruptIndex {
     Timer = PIC_1_OFFSET,
-    Keyboard
+    Keyboard,
+    Syscall = 0x80,
 }
 
 impl InterruptIndex {
@@ -52,6 +55,16 @@ impl InterruptIndex {
         usize::from(self.as_u8())
     }
 }
+
+extern "x86-interrupt" fn syscall_handler(
+    stack_frame: &mut InterruptStackFrame)
+{
+    unsafe {
+        PICS.lock()
+            .notify_end_of_interrupt(InterruptIndex::Syscall.as_u8());
+        }
+}
+
 
 extern "x86-interrupt" fn timer_interrupt_handler(
     _stack_frame: &mut InterruptStackFrame)
@@ -66,7 +79,7 @@ extern "x86-interrupt" fn keyboard_interrupt_handler(
     _stack_frame: &mut InterruptStackFrame)
 {
     use x86_64::instructions::port::Port;
-    
+
     let mut port = Port::new(0x60);
     let scancode: u8 = unsafe { port.read() };
     crate::task::keyboard::add_scancode(scancode);
